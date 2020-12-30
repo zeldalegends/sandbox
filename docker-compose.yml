@@ -91,3 +91,36 @@ services:
       context: ./documentation
     ports:
       - "3010:3000"
+
+################################################################################
+# Node-RED Stack or Compose
+################################################################################
+# docker stack deploy node-red --compose-file docker-compose-node-red.yml
+# docker-compose -f docker-compose-node-red.yml -p myNoderedProject up
+################################################################################
+
+  broker:
+    image: eclipse-mosquitto
+    volumes:
+      - "./mosquitto:/mosquitto"
+    networks:
+      - node-red-net
+    ports:
+      - "1883:1883"
+
+  node-red:
+    image: nodered/node-red:latest
+    environment:
+      - TZ=Europe/Amsterdam
+    ports:
+      - "1880:1880"
+    networks:
+      - node-red-net
+    volumes:
+      - node-red-data:/data
+
+volumes:
+  node-red-data:
+
+networks:
+  node-red-net:
